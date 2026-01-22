@@ -5,69 +5,78 @@ import (
 	"unicode"
 )
 
-var translitMap = map[string]string{
-	"А": "A", "а": "a",
-	"Б": "6", "б": "6",
-	"В": "B", "в": "B",
-	"Г": "r", "г": "r",
-	"Д": "g", "д": "g",
-	"Е": "E", "е": "e",
-	"Ж": "lll", "ж": "lll",
-	"З": "3", "з": "3",
-	"И": "u", "и": "u",
-	"Й": "ij", "й": "ij",
-	"К": "K", "к": "k",
-	"Л": "Jl", "л": "Jl",
-	"М": "M", "м": "M",
-	"Н": "H", "н": "H",
-	"О": "O", "о": "o",
-	"П": "n", "п": "n",
-	"Р": "P", "р": "p",
-	"С": "C", "с": "c",
-	"Т": "T", "т": "m",
-	"У": "Y", "у": "y",
-	"Ф": "qp", "ф": "qp",
-	"Х": "X", "х": "x",
-	"Ц": "LL", "ц": "LL",
-	"Ч": "4", "ч": "4",
-	"Ш": "LLl", "ш": "LLl",
-	"Щ": "LLL", "щ": "LLL",
-	"Ь": "b", "ь": "b",
-	"Ы": "bl", "ы": "bl",
-	"Э": "9", "э": "9",
-	"Ю": "lO", "ю": "lO",
-	"Я": "9l", "я": "9l",
+type TranslitPair struct {
+	Cyrillic string
+	Latin    string
+}
+
+var Alphabet = []TranslitPair{
+	{"А", "A"}, {"а", "a"},
+	{"Б", "6"}, {"б", "6"},
+	{"В", "B"}, {"в", "B"},
+	{"Г", "r"}, {"г", "r"},
+	{"Д", "g"}, {"д", "g"},
+	{"Е", "E"}, {"е", "e"},
+	{"Ж", "lll"}, {"ж", "lll"},
+	{"З", "3"}, {"з", "3"},
+	{"И", "u"}, {"и", "u"},
+	{"Й", "ij"}, {"й", "ij"},
+	{"К", "K"}, {"к", "k"},
+	{"Л", "Jl"}, {"л", "Jl"},
+	{"М", "M"}, {"м", "M"},
+	{"Н", "H"}, {"н", "H"},
+	{"О", "O"}, {"о", "o"},
+	{"П", "n"}, {"п", "n"},
+	{"Р", "P"}, {"р", "p"},
+	{"С", "C"}, {"с", "c"},
+	{"Т", "T"}, {"т", "m"},
+	{"У", "Y"}, {"у", "y"},
+	{"Ф", "qp"}, {"ф", "qp"},
+	{"Х", "X"}, {"х", "x"},
+	{"Ц", "LL"}, {"ц", "LL"},
+	{"Ч", "4"}, {"ч", "4"},
+	{"Ш", "LLl"}, {"ш", "LLl"},
+	{"Щ", "LLL"}, {"щ", "LLL"},
+	{"Ь", "b"}, {"ь", "b"},
+	{"Ы", "bl"}, {"ы", "bl"},
+	{"Э", "9"}, {"э", "9"},
+	{"Ю", "lO"}, {"ю", "lO"},
+	{"Я", "9l"}, {"я", "9l"},
 }
 
 func ConvertToLatin(cyrillic string) string {
-	if val, ok := translitMap[cyrillic]; ok {
-		return val
+	for _, p := range Alphabet {
+		if cyrillic == p.Cyrillic {
+			return p.Latin
+		}
 	}
 	return cyrillic
 }
 
 func ConvertToCyrillic(latin string) string {
-	if _, ok := translitMap[latin]; ok {
-		return translitMap[latin]
+	for _, p := range Alphabet {
+		if latin == p.Latin {
+			return p.Cyrillic
+		}
 	}
 	return latin
 }
 
 func Convert(words string) string {
-	var result string
 	var builder strings.Builder
 
 	for _, w := range words {
-		if unicode.Is(unicode.Latin, w) {
-			builder.WriteString(ConvertToCyrillic(string(w)))
-		} else if unicode.Is(unicode.Cyrillic, w) {
+
+		if unicode.Is(unicode.Cyrillic, w) {
 			builder.WriteString(ConvertToLatin(string(w)))
+		} else if unicode.Is(unicode.Latin, w) {
+			builder.WriteString(ConvertToCyrillic(string(w)))
 		} else {
 			builder.WriteString(string(w))
 		}
 	}
 
-	result = builder.String()
+	result := builder.String()
 	return result
 }
 
