@@ -7,6 +7,10 @@ import (
 )
 
 func main() {
-	fmt.Println("hey there")
-	fmt.Println(converter.Convert("Б"))
+
+	cyrillicSentence := "Дайте ему стул!"
+	latinSentence := "gaijme eMy cmyJl!"
+
+	fmt.Println(converter.Convert(cyrillicSentence))
+	fmt.Println(converter.Convert(latinSentence))
 }
